@@ -1,0 +1,30 @@
+{
+  "name": "aibotchat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiryuuGame/aibotchat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiryuuGame/aibotchat/issues"
+  },
+  "homepage": "https://github.com/xiryuuGame/aibotchat#readme",
+  "dependencies": {
+    "@fizzxydev/baileys-pro": "^8.6.11",
+    "@hapi/boom": "^10.0.1",
+    "axios": "^1.8.4",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "pino": "^9.6.0"
+  }
+}
