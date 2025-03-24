@@ -133,7 +133,7 @@ async function bot() {
             const toolPrompt = isTools[2].slice(1, -1);
             const tool = tools.find((tool) => tool[toolName]);
             const toolResponse = await tool[toolName](toolPrompt);
-            // console.log(toolResponse);
+            console.log(toolResponse);
             const response2 = await ai(m, sock, `${toolResponse}`);
             console.log(response2);
 
