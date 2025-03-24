@@ -174,9 +174,13 @@ function getMessage(message) {
   );
 }
 const jadwalTugasFunction = require("./function/jadwaltugas");
+const jadwalPiketFunction = require("./function/jadwalpiket");
 
 function listTools() {
-  return [{ jadwaltugas: (any) => jadwalTugasFunction() }];
+  return [
+    { jadwaltugas: (any) => jadwalTugasFunction() },
+    { jadwalpiket: (any) => jadwalPiketFunction() },
+  ];
 }
 bot();
 module.exports = { listTools };

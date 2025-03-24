@@ -286,8 +286,8 @@ berikut merupakan detail yang sepertinya harus kamu ingat:
   note: mungkin nama kamu akan sama dengan orang lain, tidak apa apa
 
 ini adalah list tools yang bisa kamu pakai saat ini:
-  - generateImage(prompt) - Generate gambar dengan prompt yang kamu berikan
   - jadwaltugas() - Memberikan jadwal mata pelajaran yang sudah ada di dalam database
+  - jadwalpiket() - Memberikan jadwal piket yang sudah ada di dalam database
   - Gimage(query, amount) - Mencari gambar berdasarkan query dan jumlah yang hendak dicari
 
 cara kamu menggunakan tools nya(contoh response. note: ini adalah contoh buatan manusia. kamu dapat membuat jawaban sesuai preferensi kamu sendiri):
