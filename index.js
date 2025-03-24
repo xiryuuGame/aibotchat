@@ -1,5 +1,4 @@
 const ai = require("./function/ai");
-const generateImage = require("./function/imageGeneration");
 const makeWASocket = require("@fizzxydev/baileys-pro").default;
 const {
   useMultiFileAuthState,
@@ -76,7 +75,7 @@ async function bot() {
           from,
         );
 
-        m.chat = getMessage(m.message);
+        m.chat = getMessage(m.message) || "";
         m.username = m.pushName;
 
         console.log(chalk.black(chalk.bgGreen("Message : ")), m.chat);
@@ -92,8 +91,60 @@ async function bot() {
           chalk.gray(JSON.stringify(m, null, 2)),
         );
 
+        if (m.chat === ".toggle") {
+          const list = JSON.parse(fs.readFileSync("./list.json"));
+          const index = list.indexOf(from);
+          if (index > -1) {
+            list.splice(index, 1);
+            fs.writeFileSync("./list.json", JSON.stringify(list));
+            sock.sendMessage(
+              from,
+              {
+                text: `Hore!! ${isGroup ? "Group" : "User"} sudah berhasil dimatikan dari fitur AI`,
+              },
+              { quotedMessage: m },
+            );
+          } else {
+            list.push(from);
+            fs.writeFileSync("./list.json", JSON.stringify(list));
+            sock.sendMessage(
+              from,
+              {
+                text: `Hore!! ${isGroup ? "Group" : "User"} sudah berhasil ditambahkan ke fitur AI`,
+              },
+              { quotedMessage: m },
+            );
+          }
+          return;
+        }
         if (toggleAigroup) {
-          const response = await ai(m, sock);
+          const response = await ai(m, sock, "");
+          console.log(response);
+          let isTools = response.match(/(\[.*?\])(\(.*?\))/);
+          if (isTools) {
+            const key = await sock.sendMessage(
+              from,
+              { text: response },
+              { quotedMessage: m },
+            );
+            console.log(key);
+            const tools = listTools();
+            const toolName = isTools[1].slice(1, -1);
+            const toolPrompt = isTools[2].slice(1, -1);
+            const tool = tools.find((tool) => tool[toolName]);
+            const toolResponse = await tool[toolName](toolPrompt);
+            console.log(toolResponse);
+            const response2 = await ai(m, sock, `${toolResponse}`);
+            console.log(response2);
+
+            sock.sendMessage(
+              from,
+              { text: response2, edit: key.key },
+              { quotedMessage: m },
+            );
+            return;
+          }
+
           sock.sendMessage(from, { text: response }, { quotedMessage: m });
         }
       }
@@ -122,8 +173,10 @@ function getMessage(message) {
     ""
   );
 }
+const jadwalTugasFunction = require("./function/jadwaltugas");
+
 function listTools() {
-  return [{ generateImage: { prompt } }, { google: { query, page } }];
+  return [{ jadwaltugas: (any) => jadwalTugasFunction() }];
 }
 bot();
 module.exports = { listTools };
