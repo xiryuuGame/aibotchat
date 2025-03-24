@@ -127,13 +127,13 @@ async function bot() {
               { text: response },
               { quotedMessage: m },
             );
-            console.log(key);
+            // console.log(key);
             const tools = listTools();
             const toolName = isTools[1].slice(1, -1);
             const toolPrompt = isTools[2].slice(1, -1);
             const tool = tools.find((tool) => tool[toolName]);
             const toolResponse = await tool[toolName](toolPrompt);
-            console.log(toolResponse);
+            // console.log(toolResponse);
             const response2 = await ai(m, sock, `${toolResponse}`);
             console.log(response2);
 
