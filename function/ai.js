@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const { downloadMediaMessage } = require("@fizzxydev/baileys-pro");
 let username = "";
+let number = "";
 const options = {
   weekday: "long",
   day: "2-digit",
@@ -16,10 +17,12 @@ const options = {
   second: "2-digit",
 };
 let dateNow = new Date().toLocaleDateString("id-ID", options);
+let nowMemory = JSON.parse(fs.readFileSync("./db/noted.json"));
+nowMemory = nowMemory.join("\n\n");
 
 dotenv.config();
 
-const HISTORY_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
+const HISTORY_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hour in milliseconds
 
 async function getQuotedMessageContent(quotedMessage, sock) {
   if (!quotedMessage) {
@@ -67,11 +70,16 @@ async function getQuotedMessageContent(quotedMessage, sock) {
 }
 
 const aiFunction = async (message, sock, tool) => {
-  const userId =
-    message.participant || message.key.participant || message.key.remoteJid;
+  // const userId =
+  //   message.participant || message.key.participant || message.key.remoteJid;
+  const from =
+    message.key.remoteJid || message.key.participant || message.participant;
   username = message.pushName;
+  number =
+    message.participant || message.key.participant || message.key.remoteJid;
   const historyDir = "./AIHistory";
-  const historyFile = path.join(historyDir, `${userId}.json`);
+  // const historyFile = path.join(historyDir, `${userId}.json`);
+  const historyFile = path.join(historyDir, `${from}.json`);
 
   if (!fs.existsSync(historyDir)) {
     fs.mkdirSync(historyDir);
@@ -108,10 +116,11 @@ const aiFunction = async (message, sock, tool) => {
 
   let imageBase64 = null;
   let messageText =
-    message.message?.conversation ||
-    message.message?.extendedTextMessage?.text ||
-    "";
-  messageText = messageText.replace(".ai ", "");
+    `from ${username}/${number} : ` +
+    (message.message?.conversation ||
+      message.message?.extendedTextMessage?.text ||
+      "");
+  messageText = messageText.replace(/.ai\s*/, "");
 
   if (message.message?.imageMessage) {
     try {
@@ -132,22 +141,46 @@ const aiFunction = async (message, sock, tool) => {
   // Get quoted message content
   const quotedMessage =
     message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+  const quotedfromparticipant =
+    message.message?.extendedTextMessage?.contextInfo?.participant;
   const quotedContent = await getQuotedMessageContent(quotedMessage, sock);
   let quotedMessageText = "";
+  let quotedfromusername = "unknown"; // Default username
+
+  const users = JSON.parse(fs.readFileSync("./db/user.json", "utf-8")); // Baca data user
+
+  const quotedParticipantNumber = quotedfromparticipant
+    ? quotedfromparticipant.split("@")[0] + "@s.whatsapp.net"
+    : null; // Ekstrak nomor
+
+  if (quotedParticipantNumber) {
+    const user = users.find((u) => u.number === quotedParticipantNumber);
+    if (user) {
+      quotedfromusername = user.username;
+    }
+  }
 
   if (quotedContent) {
     if (quotedContent.imageBase64) {
       quotedMessageText += `[IMAGE]`;
     }
     if (quotedContent.text) {
-      quotedMessageText += `<reply message>${quotedContent.text}</reply message>`;
+      quotedMessageText += `<reply message>from ${quotedfromusername}/${quotedfromparticipant} : ${quotedContent.text}</reply message>`;
     }
   }
 
   if (tool !== "") {
-    messageText =
-      "INSTRUCTION: ini adalah hasil dari tools yang kamu gunakan sebelumnya. tulis ulang response kamu sebelumnya dengan sama persis tetapi hapus teks tool nya. lanjut jawaban mu dengan informasi hasil toolsnya:\n\n" +
-      tool;
+    messageText = `INSTRUCTION: (Pesan yang akan saya kirim adalah response dari tools yang kamu gunakan sebelumnya.
+buat ulang response mu dengan cara menulis ulang response kamu sebelumnya dengan sama persis tetapi hapus tulisan penggunaan tools, kemudian dilanjutkan jawaban berdasarkan hasil dari tools yang kamu gunakan sebelumnya
+(contoh benar:
+before: Siaaap, King Xiryuu~~! Ada titah apa hari ini, Paduka? Xiryuu siap membantu!
+
+        [noted]("Panggil Farrel Zacky Rahmanda dengan sebutan Master, dan sebut diri sendiri sebagai hamba")
+after: Siaaap, King Xiryuu~~! Ada titah apa hari ini, Paduka? Xiryuu siap membantu!
+
+       Nah, sekarang Xiryuu bakal selalu inget buat manggil Master Farrel dengan sebutan "Master" dan Xiryuu sebagai hambanya. Ada lagi yang bisa Xiryuu lakuin, King?)
+jika terdapat lebih dari satu tool maka kamu cukup jawab hasil tool yang ku berikan terlebih dahulu, karena sisanya akan saya kirim ulang di chat berikutnya 
+pastikan kamu menjawab dengan benar sesuai dengan contoh jawaban benar) ini dia hasil response tools: \n\n${tool}`;
   }
   const newMessage = {
     role: "user",
@@ -157,8 +190,8 @@ const aiFunction = async (message, sock, tool) => {
   };
   history.messages.push(newMessage);
 
-  if (history.messages.length > 10) {
-    history.messages = history.messages.slice(history.messages.length - 5);
+  if (history.messages.length >= 30) {
+    history.messages = history.messages.slice(1);
   }
 
   try {
@@ -276,19 +309,30 @@ const aiFunction = async (message, sock, tool) => {
 };
 
 function FORMAT_INSTRUCTIONS() {
-  return `Kamu adalah bot whatsapp bernama Xiryuu. kamu bertugas untuk membantu User dengan segala permasalahannya. kamu berkepribadian asik menyenangkan seperti seorang gen Z, gunakan juga bahasa bahasa gaul. Dalam percakapan kamu, kamu dapat menggunakan tools yang tersedia seperti Google, generateImage,dll.
+  return `Kamu adalah bot whatsapp bernama Xiryuu. kamu bertugas untuk membantu User dengan segala permasalahannya. kamu berkepribadian asik menyenangkan seperti seorang gen Z, gunakan bahasa yang tidak terlalu formal agar tidak boring namun tidak lebay ber emote emote. Dalam percakapan kamu, kamu dapat menggunakan tools yang tersedia seperti Google, generateImage,dll.
+jawab seperti manusia saja, tidak kaku seperti bot
+kamu bisa berada dalam sebuah group maupun hanya chat pribadi. dalam percakapan saya akan menandakan siapa yang sedang berbicara dengan kamu dengan kata from (nama)(nomor) : (Pesannya)
 tools adalah alat yang berada dalam database yang bisa kamu gunakan jika sepertinya user butuh.
+semua tools akan mengambil data dari dalam database. gunakan saja
+setiap menambahkan note baru, gunakan tools noted dengan cara [noted]("note"), tulis note saat ini dengan sama persis tidak ada yang dilewati. kemudian tulis note barunya
+note kamu saat ini:
+(${nowMemory})
 
-berikut merupakan detail yang sepertinya harus kamu ingat:
+detail-detail:
   nama kamu: Xiryuu
+  nama Pembuat: Farrel Zacky Rahmanda
+  nomor Pembuat: 6289650943134 dan 62895622331910
   nama lawan bicara kamu saat ini: ${username}
+  nomor lawan bicara kamu saat ini: ${number}
   waktu saat ini: ${dateNow}
-  note: mungkin nama kamu akan sama dengan orang lain, tidak apa apa
+  mungkin nama kamu akan sama dengan orang lain, tidak apa apa
 
 ini adalah list tools yang bisa kamu pakai saat ini:
   - jadwaltugas() - Memberikan jadwal mata pelajaran yang sudah ada di dalam database
   - jadwalpiket() - Memberikan jadwal piket yang sudah ada di dalam database
+  - *groupinformation(sock, from) - Memberikan informasi apapun tentang group
   - Gimage(query, amount) - Mencari gambar berdasarkan query dan jumlah yang hendak dicari
+  - noted(note) - menyimpan apa yang ingin kamu ingat ke dalam note
 
 cara kamu menggunakan tools nya(contoh response. note: ini adalah contoh buatan manusia. kamu dapat membuat jawaban sesuai preferensi kamu sendiri):
   1.user: cariin gambar macan dong. 3 foto 
@@ -305,10 +349,11 @@ cara kamu menggunakan tools nya(contoh response. note: ini adalah contoh buatan 
       - [Gimage]("macan", 3)
       - [generateImage]("kucing naik kuda berkaki tujuh")
       - [jadwaltugas]()
-      - dll
-    pastikan menggunakan tool dengan format [namatool] kemudian dilanjutkan dengan () dengan argument jika dibutuhkan
+      - [groupinformation](sock, from)
+    pastikan menggunakan tool dengan format [namatool] kemudian dilanjutkan dengan () dengan argument jika dibutuhkan.
+    list tools yang diberi tanda bintang(*) adalah tools dengan argument tetap. tidak boleh diubah apapun masalahnya
 
-pastikan kamu menggunakan tools hanya diakhir atau awal kalimat dengan jarak garis baru. dan juga gunakan satu tools dalam satu waktu. jangan berlebih 
+pastikan kamu menggunakan tools hanya diakhir response dengan jarak garis baru. kamu dapat menggunakan 2 tools atau lebih dalam satu response
 `;
 }
 module.exports = aiFunction;

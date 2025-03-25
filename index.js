@@ -75,6 +75,27 @@ async function bot() {
           from,
         );
 
+        // Logic untuk menyimpan data user ke user.json
+        try {
+          const userData = JSON.parse(fs.readFileSync("./db/user.json"));
+          const userExists = userData.find((user) => user.number === author);
+
+          if (!userExists) {
+            userData.push({ number: author, username: m.pushName });
+            fs.writeFileSync(
+              "./db/user.json",
+              JSON.stringify(userData, null, 2),
+            );
+            console.log(`User baru ditambahkan: ${author} - ${m.username}`);
+          } else {
+          }
+        } catch (error) {
+          console.error("Gagal menyimpan data user:", error);
+        }
+        // End logic penyimpanan user
+        console.log(m.message?.protocolMessage?.type);
+        if (m.message?.protocolMessage?.type === 0) return;
+
         m.chat = getMessage(m.message) || "";
         m.username = m.pushName;
 
@@ -118,34 +139,52 @@ async function bot() {
           return;
         }
         if (toggleAigroup) {
-          const response = await ai(m, sock, "");
-          console.log(response);
-          let isTools = response.match(/(\[.*?\])(\(.*?\))/);
-          if (isTools) {
-            const key = await sock.sendMessage(
-              from,
-              { text: response },
-              { quotedMessage: m },
-            );
-            // console.log(key);
-            const tools = listTools();
-            const toolName = isTools[1].slice(1, -1);
-            const toolPrompt = isTools[2].slice(1, -1);
-            const tool = tools.find((tool) => tool[toolName]);
-            const toolResponse = await tool[toolName](toolPrompt);
-            console.log(toolResponse);
-            const response2 = await ai(m, sock, `${toolResponse}`);
-            console.log(response2);
+          // Jalankan pemrosesan AI di latar belakang
+          Promise.resolve().then(async () => {
+            const response = await ai(m, sock, "");
+            console.log(response);
+            let isTools = [...response.matchAll(/\[(.*?)\]\((.*?)\)$/gm)];
+            // console.log(isTools);
+            if (isTools.length > 0) {
+              const key = await sock.sendMessage(
+                from,
+                { text: response },
+                { quotedMessage: m },
+              );
+              let combinedResponse = "";
+              for (const toolMatch of isTools) {
+                const toolName = toolMatch[1]; // Tidak perlu .slice(1, -1)
+                const toolPrompt = toolMatch[2]; // Tidak perlu .slice(1, -1)
+                const tools = listTools(sock, from);
+                const tool = tools.find((tool) => tool[toolName]);
+                // console.log(toolName);
+                // console.log(toolPrompt);
+                let toolResponse;
+                if (toolName === "groupinformation") {
+                  toolResponse = await tool[toolName]();
+                } else {
+                  toolResponse = await tool[toolName](toolPrompt);
+                }
+                console.log(`Tool Response (${toolName}):`, toolResponse);
+                const response2 = await ai(
+                  m,
+                  sock,
+                  `Tool Response (${toolName}):${toolResponse}`,
+                );
+                console.log(`AI Response after Tool (${toolName}):`, response2);
+                combinedResponse = `${response2}`;
+              }
 
-            sock.sendMessage(
-              from,
-              { text: response2, edit: key.key },
-              { quotedMessage: m },
-            );
-            return;
-          }
+              sock.sendMessage(
+                from,
+                { text: combinedResponse, edit: key.key },
+                { quotedMessage: m },
+              );
+              return;
+            }
 
-          sock.sendMessage(from, { text: response }, { quotedMessage: m });
+            sock.sendMessage(from, { text: response }, { quotedMessage: m });
+          });
         }
       }
     });
@@ -175,11 +214,15 @@ function getMessage(message) {
 }
 const jadwalTugasFunction = require("./function/jadwaltugas");
 const jadwalPiketFunction = require("./function/jadwalpiket");
+const groupInformationFunction = require("./function/groupinformation");
+const notedFunction = require("./function/noted");
 
-function listTools() {
+function listTools(sock, from) {
   return [
     { jadwaltugas: (any) => jadwalTugasFunction() },
     { jadwalpiket: (any) => jadwalPiketFunction() },
+    { groupinformation: () => groupInformationFunction(sock, from) },
+    { noted: (note) => notedFunction(note) },
   ];
 }
 bot();
