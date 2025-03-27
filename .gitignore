@@ -3,3 +3,5 @@ AIHistory/
 session/
 function/jadwalpiket.js
 .env
+temp/
+log*.
