@@ -143,8 +143,50 @@ async function bot() {
           Promise.resolve().then(async () => {
             const response = await ai(m, sock, "");
             console.log(response);
-            let isTools = [...response.matchAll(/\[(.*?)\]\((.*?)\)$/gm)];
-            // console.log(isTools);
+
+            // Fungsi ekstrak nilai dalam kurung yang diperbarui
+            function ekstrakNilaiDalamKurung(inputString) {
+              const regex = /\[.*?\]\((.*?)\)$/;
+              const match = inputString.match(regex);
+
+              if (match && match[1]) {
+                const nilaiDalamKurung = match[1];
+                const arrayNilai = [];
+                let currentNilai = "";
+                let dalamKutipan = false;
+
+                for (let i = 0; i < nilaiDalamKurung.length; i++) {
+                  const karakter = nilaiDalamKurung[i];
+
+                  if (karakter === '"') {
+                    dalamKutipan = !dalamKutipan;
+                    currentNilai += karakter;
+                  } else if (karakter === "," && !dalamKutipan) {
+                    arrayNilai.push(currentNilai.trim());
+                    currentNilai = "";
+                  } else {
+                    currentNilai += karakter;
+                  }
+                }
+
+                arrayNilai.push(currentNilai.trim());
+                return arrayNilai;
+              } else {
+                return [];
+              }
+            }
+
+            // Mengganti ekstraksi nilai dengan fungsi yang diperbarui
+            let isTools = [];
+            const toolMatches = [...response.matchAll(/\[(.*?)\]\((.*?)\)$/gm)];
+            for (const toolMatch of toolMatches) {
+              const toolName = toolMatch[1];
+              const toolArgs = ekstrakNilaiDalamKurung(toolMatch[0]); // Menggunakan fungsi ekstrakNilaiDalamKurung
+              isTools.push({ toolName, toolArgs });
+            }
+
+            console.log(isTools);
+
             if (isTools.length > 0) {
               const key = await sock.sendMessage(
                 from,
@@ -152,18 +194,17 @@ async function bot() {
                 { quotedMessage: m },
               );
               let combinedResponse = "";
-              for (const toolMatch of isTools) {
-                const toolName = toolMatch[1]; // Tidak perlu .slice(1, -1)
-                const toolPrompt = toolMatch[2]; // Tidak perlu .slice(1, -1)
+              for (const toolObj of isTools) {
+                const toolName = toolObj.toolName;
+                const toolArgs = toolObj.toolArgs;
                 const tools = listTools(sock, from);
                 const tool = tools.find((tool) => tool[toolName]);
-                // console.log(toolName);
-                // console.log(toolPrompt);
+
                 let toolResponse;
                 if (toolName === "groupinformation") {
                   toolResponse = await tool[toolName]();
                 } else {
-                  toolResponse = await tool[toolName](toolPrompt);
+                  toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator untuk mengirimkan argumen
                 }
                 console.log(`Tool Response (${toolName}):`, toolResponse);
                 const response2 = await ai(
@@ -216,13 +257,15 @@ const jadwalTugasFunction = require("./function/jadwaltugas");
 const jadwalPiketFunction = require("./function/jadwalpiket");
 const groupInformationFunction = require("./function/groupinformation");
 const notedFunction = require("./function/noted");
+const iGen = require("./function/imagegenerate");
 
 function listTools(sock, from) {
   return [
-    { jadwaltugas: (any) => jadwalTugasFunction() },
-    { jadwalpiket: (any) => jadwalPiketFunction() },
+    { jadwaltugas: () => jadwalTugasFunction() },
+    { jadwalpiket: () => jadwalPiketFunction() },
     { groupinformation: () => groupInformationFunction(sock, from) },
     { noted: (note) => notedFunction(note) },
+    { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
   ];
 }
 bot();
