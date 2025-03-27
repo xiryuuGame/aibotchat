@@ -2,3 +2,4 @@ node_modules/
 AIHistory/
 session/
 function/jadwalpiket.js
+.env
