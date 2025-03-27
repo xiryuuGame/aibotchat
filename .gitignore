@@ -4,4 +4,12 @@ session/
 function/jadwalpiket.js
 .env
 temp/
-log*.
+*.log
+logs/
+*.config
+local.ini
+build/
+dist/
+.DS_Store
+Thumbs.db
+*.js.map

@@ -295,7 +295,7 @@ ini dia hasil response tools: \n\n${tool}`;
 
     const response = await axios(options);
 
-    fs.writeFileSync("./log2.json", JSON.stringify(response.data, null, 2));
+    fs.writeFileSync("./log2.log", JSON.stringify(response.data, null, 2));
     let reply = "";
     const parts2 = response.data.candidates[0].content.parts;
 
