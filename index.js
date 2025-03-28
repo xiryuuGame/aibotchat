@@ -8,6 +8,7 @@ const {
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
+const global = JSON.parse(fs.readFileSync("bot-config.json"));
 
 async function bot() {
   const { state, saveCreds } = await useMultiFileAuthState("session");
@@ -31,7 +32,7 @@ async function bot() {
     sock.ev.on("creds.update", saveCreds);
 
     if (!sock.authState.creds.registered) {
-      const phoneNumber = "62895622331910";
+      const phoneNumber = global.number;
       setTimeout(async () => {
         const pairCode = "11111111";
         let code = await sock.requestPairingCode(phoneNumber, pairCode);
