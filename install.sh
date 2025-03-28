@@ -1,12 +1,29 @@
 #!/bin/bash
 
-# Warna
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-NC='\033[0m' # No Color
+# Deteksi sistem operasi
+OS=$(uname -s)
 
-# Animasi loading
+# Fungsi untuk warna
+set_colors() {
+  if command -v tput &>/dev/null && [[ "$OS" != "MINGW"* && "$OS" != "Windows_NT" ]]; then
+    # tput tersedia dan bukan Windows
+    RED=$(tput setaf 1)
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    NC=$(tput sgr0)
+  else
+    # tput tidak tersedia atau Windows, nonaktifkan warna
+    RED=""
+    GREEN=""
+    YELLOW=""
+    NC=""
+  fi
+}
+
+# Inisialisasi warna
+set_colors
+
+# Fungsi animasi loading
 loading() {
   local i=0
   while [ $i -lt 3 ]; do
@@ -16,9 +33,6 @@ loading() {
   done
   echo -ne "${NC}\n"
 }
-
-# Deteksi sistem operasi
-OS=$(uname -s)
 
 # Instalasi npm
 echo "${GREEN}Memulai instalasi NPM...${NC}"
@@ -68,7 +82,7 @@ fi
 # Instalasi PM2 (opsional)
 read -p "Apakah Anda ingin menginstal PM2? (y/n): " INSTALL_PM2
 
-if [[ "$INSTALL_PM2" == "y" ]]; then
+if [[ -z "$INSTALL_PM2" || "$INSTALL_PM2" == "y" ]]; then
   echo "${GREEN}Menginstal PM2...${NC}"
   if ! npm install -g pm2; then
     if [[ "$OS" == "Linux" || "$OS" == "Darwin" ]]; then
