@@ -36,13 +36,13 @@ loading() {
 
 # Instalasi npm
 echo "${GREEN}Memulai instalasi NPM...${NC}"
-npm install
-npm update
+npm install &>/dev/null
+npm update &>/dev/null
 echo "${GREEN}Instalasi NPM selesai.${NC}"
 
 # Membuat folder temp
 echo "${GREEN}Membuat folder temp...${NC}"
-mkdir -p temp
+mkdir -p temp &>/dev/null
 echo "${GREEN}Folder temp telah dibuat.${NC}"
 
 # Membuat file .env
@@ -58,7 +58,7 @@ fi
 
 # Membuat folder db
 echo "${GREEN}Membuat folder db...${NC}"
-mkdir -p db
+mkdir -p db &>/dev/null
 echo "${GREEN}Folder db telah dibuat.${NC}"
 
 # Membuat file user.json
@@ -66,7 +66,7 @@ echo "${GREEN}Membuat file user.json...${NC}"
 if [ -f db/user.json ]; then
   echo "${YELLOW}user.json sudah ada.${NC}"
 else
-  touch db/user.json
+  touch db/user.json &>/dev/null
   echo "${GREEN}File user.json telah dibuat.${NC}"
 fi
 
@@ -75,7 +75,7 @@ echo "${GREEN}Membuat file noted.json...${NC}"
 if [ -f db/noted.json ]; then
   echo "${YELLOW}noted.json sudah ada.${NC}"
 else
-  touch db/noted.json
+  touch db/noted.json &>/dev/null
   echo "${GREEN}File noted.json telah dibuat.${NC}"
 fi
 
@@ -84,10 +84,10 @@ read -p "Apakah Anda ingin menginstal PM2? (y/n): " INSTALL_PM2
 
 if [[ -z "$INSTALL_PM2" || "$INSTALL_PM2" == "y" ]]; then
   echo "${GREEN}Menginstal PM2...${NC}"
-  if ! npm install -g pm2; then
+  if ! npm install -g pm2 &>/dev/null; then
     if [[ "$OS" == "Linux" || "$OS" == "Darwin" ]]; then
       echo "${YELLOW}Instalasi PM2 gagal. Mencoba dengan sudo...${NC}"
-      if ! sudo npm install -g pm2; then
+      if ! sudo npm install -g pm2 &>/dev/null; then
         echo "${RED}Gagal menginstal PM2 bahkan dengan sudo. Pastikan npm dan sudo terinstal dengan benar.${NC}"
       else
         echo "${GREEN}PM2 berhasil diinstal dengan sudo.${NC}"
