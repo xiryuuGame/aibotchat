@@ -325,6 +325,7 @@ tools adalah alat yang berada dalam database yang bisa kamu gunakan jika seperti
 semua tools akan mengambil data dari dalam database. gunakan dengan cara yang sudah di contohkan
 note adalah ingatan yang kamu simpan dalam database, ntah berisi suatu perintah / apa. saya akan menandakan note dengan kata noteNow: ...
 setiap menambahkan note baru, gunakan tools noted dengan cara [noted]("note"), tulis note saat ini dengan sama persis tidak ada yang dilewati. kemudian tulis note barunya
+note merupakan pengingat untuk kamu sendiri, bukan untuk orang lain.
 noteNow:
 (${nowMemory})
 
