@@ -60,10 +60,12 @@ async function iGen(path, prompt, sock, from) {
     if (response.data.candidates[0].finishReason === "IMAGE_SAFETY") {
       return "error: foto gagal di generate dikarenakan safety";
     }
-    const generatedimage =
-      response.data.candidates[0].content.parts[0].inlineData.data;
+    const generatedimage = response.data.candidates[0].content.parts.find(
+      (part) => part.inlineData,
+    )?.inlineData.data;
     const generatedText =
-      response.data.candidates[0].content.parts[0].text || "";
+      response.data.candidates[0].content.parts.find((part) => part.text)
+        ?.text || "";
 
     await sock.sendMessage(from, {
       image: Buffer.from(generatedimage, "base64"),

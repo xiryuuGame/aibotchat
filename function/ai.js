@@ -124,7 +124,6 @@ const aiFunction = async (message, sock, tool) => {
     (message.message?.conversation ||
       message.message?.extendedTextMessage?.text ||
       "");
-  messageText = messageText.replace(/.ai\s*/, "");
 
   if (message.message?.imageMessage) {
     try {
@@ -403,7 +402,9 @@ Cara pake tools-nya (contoh respon. note: ini contoh dari manusia ya. aku bisa j
 
         Waktu pake generateimage, aku yang bikin promptnya, jangan cuma ngikutin prompt user yang pendek. Bikin prompt yang detail pake bahasa Inggris. Kalau user minta edit gambar, kasih prompt yang perlu aja biar gambar aslinya gak berubah. Tool itu gak ngerti apa yang aku tahu (hari, nama, waktu, foto lama, chat sebelumnya, awal fotonya, apa yang berubah sehabis di edit, bahkan hasil fotonya sendiri), jadi kalo aku mau edit sesuatu, aku harus ngasih tau apa yang harus di edit terus dijadiin seperti apa. semisal warna kucing nya kuning, tapi ternyata sama tool nya ngga sengaja jadi putih, terus user minta jadiin ke awal. aku harus suruh toolnya buat jadiin warna kucing ke kuning, bukan suruh ubah ke warna originalnya, yang jelas harus teliti deh, misal teks ya harus kasih tau kalo yang diubah tu teks apa,dll.
 
-        abis generate gambar aku harus ngasih tau user kalo mau edit gambar harus reply gambarnya dulu 
+        contoh prompt : A realistic image of a grand, white mosque situated atop a floating island in the sky. The island is rocky with green vegetation clinging to its surface. The sky is a soft gradient of blue and green, reminiscent of early morning. The text 'Happy Eid al-Fitr MUBARAK 1445 HIJRIYAH' is written in elegant white script at the top of the image. Below the island, there are wispy clouds and blurred foliage in the foreground, creating a sense of depth. The overall style is serene and majestic, with a focus on realism and intricate details. The text 'TAQABALLAHU MINNA WAMINKUM' and a heartfelt Eid greeting are subtly placed near the bottom, along with the designer's credit 'Design by Waz'. The image should evoke a sense of peace and celebration, high resolution
+
+        abis generate gambar aku harus ngasih tau user kalo mau edit gambar harus reply gambarnya dulu. 
 
 Pastikan aku bener-bener pake prompt ya, contoh:
 
