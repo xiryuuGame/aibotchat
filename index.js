@@ -234,25 +234,30 @@ async function bot() {
 }
 
 function getMessage(message) {
-  return (
-    message.conversation ||
-    message.extendedTextMessage?.text ||
-    message.imageMessage?.caption ||
-    message.videoMessage?.caption ||
-    message.documentWithCaptionMessage?.message?.documentMessage?.caption ||
-    message.buttonsResponseMessage?.selectedButtonId ||
-    (() => {
-      try {
-        return JSON.parse(
-          message.interactiveResponseMessage?.nativeFlowResponseMessage
-            ?.paramsJson,
-        ).id;
-      } catch (e) {
-        return "";
-      }
-    })() ||
-    ""
-  );
+  try {
+    return (
+      message.conversation ||
+      message.extendedTextMessage?.text ||
+      message.imageMessage?.caption ||
+      message.videoMessage?.caption ||
+      message.documentWithCaptionMessage?.message?.documentMessage?.caption ||
+      message.buttonsResponseMessage?.selectedButtonId ||
+      (() => {
+        try {
+          return JSON.parse(
+            message.interactiveResponseMessage?.nativeFlowResponseMessage
+              ?.paramsJson,
+          ).id;
+        } catch (e) {
+          return "";
+        }
+      })() ||
+      ""
+    );
+  } catch (error) {
+    console.error("Error in getMessage function:", error);
+    return "";
+  }
 }
 const jadwalTugasFunction = require("./function/jadwaltugas");
 const jadwalPiketFunction = require("./function/jadwalpiket");
