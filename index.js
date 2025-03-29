@@ -227,6 +227,68 @@ async function bot() {
 
             sock.sendMessage(from, { text: response }, { quotedMessage: m });
           });
+        } else {
+          // Logic history grup
+          try {
+            let history = JSON.parse(
+              fs.readFileSync(`./AIHistory/${from}.json`),
+            );
+            // Get quoted message content
+            const quotedMessage =
+              m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+            const quotedfromparticipant =
+              m.message?.extendedTextMessage?.contextInfo?.participant;
+            const quotedContent = await getQuotedMessageContent(
+              quotedMessage,
+              sock,
+            );
+            let quotedMessageText = "";
+            let quotedfromusername = "unknown"; // Default username
+
+            const users = JSON.parse(
+              fs.readFileSync("./db/user.json", "utf-8"),
+            ); // Baca data user
+
+            const quotedParticipantNumber = quotedfromparticipant
+              ? quotedfromparticipant.split("@")[0] + "@s.whatsapp.net"
+              : null; // Ekstrak nomor
+
+            if (quotedParticipantNumber) {
+              const user = users.find(
+                (u) => u.number === quotedParticipantNumber,
+              );
+              if (user) {
+                quotedfromusername = user.username;
+              }
+            }
+
+            if (quotedContent) {
+              if (quotedContent.imageBase64) {
+                quotedMessageText += `imagePath: ${randomFileName}\n\n[IMAGE]`;
+              }
+              if (quotedContent.text) {
+                quotedMessageText += `<reply message>from ${quotedfromusername}/${quotedfromparticipant} : ${quotedContent.text}</reply message>`;
+              }
+            }
+            let messageText = `from ${m.pushName}/${author} : ` + m.chat;
+            const newMessage = {
+              role: "user",
+              content: quotedMessageText
+                ? `${quotedMessageText} ${messageText}`
+                : messageText,
+            };
+            history.messages.push(newMessage);
+            if (history.messages.length >= 30) {
+              history.messages = history.messages.slice(1);
+            }
+            fs.writeFileSync(
+              `./AIHistory/${from}.json`,
+              JSON.stringify(history, null, 2),
+            );
+          } catch (error) {
+            console.error("Gagal menyimpan history grup:", error.message);
+          }
+          // End logic history grup
         }
       }
     });
@@ -275,6 +337,51 @@ function listTools(sock, from) {
     { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
     { gempa: () => gempaFunction() },
   ];
+}
+async function getQuotedMessageContent(quotedMessage, sock) {
+  if (!quotedMessage) {
+    return null;
+  }
+
+  let quotedText = "";
+  let quotedImageBase64 = null;
+
+  // Handle botInvokeMessage (self-replies)
+  if (quotedMessage.botInvokeMessage) {
+    const botMessage = quotedMessage.botInvokeMessage.message;
+    if (botMessage?.extendedTextMessage?.text) {
+      quotedText = botMessage.extendedTextMessage.text;
+    }
+  }
+  // Handle regular quoted messages
+  else {
+    if (quotedMessage.conversation) {
+      quotedText = quotedMessage.conversation;
+    } else if (quotedMessage.extendedTextMessage?.text) {
+      quotedText = quotedMessage.extendedTextMessage.text;
+    } else if (quotedMessage.imageMessage?.caption) {
+      quotedText = quotedMessage.imageMessage.caption;
+    } else if (quotedMessage.videoMessage?.caption) {
+      quotedText = quotedMessage.videoMessage.caption;
+    }
+
+    if (quotedMessage.imageMessage) {
+      try {
+        const buffer = await downloadMediaMessage(
+          { message: { imageMessage: quotedMessage.imageMessage } }, // Reconstruct a minimal message
+          "buffer",
+          {},
+          { logger: console },
+        );
+        fs.writeFileSync(randomFileName, buffer);
+        quotedImageBase64 = buffer.toString("base64");
+      } catch (error) {
+        console.error("Error downloading or processing quoted image:", error);
+      }
+    }
+  }
+
+  return { text: quotedText, imageBase64: quotedImageBase64 };
 }
 bot();
 module.exports = { listTools };
