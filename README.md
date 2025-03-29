@@ -20,8 +20,9 @@ This bot offers a range of helpful features:
 * **Schedule Management:**
     * `jadwal mata pelajaran`: Provides access to class schedules.
     * `jadwal piket`: Displays duty rosters.
-* **Group Information:**
+* **Information:**
     * `group info`: Retrieves and shares group details.
+    * `info Gempa`: Retrieves and shares earthquakes information.
 * **Content Generation:**
     * `image generator`: Creates images based on prompts.
 * **Note-Taking:**
