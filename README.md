@@ -56,6 +56,18 @@ To run this project, you will need to set the following environment variable in 
     ./install.sh
     ```
 
+3. **Important:**
+
+   Change the bot-config.json
+   ```json
+   {
+     "botname": "YOUR BOT NAME",
+     "number": "YOUR BOT NUMBER",
+     "owner": ["OWNER NUMBER", "OWNER NUMBER 2"],
+     "ownerName": "YOUR NAME"
+   }
+   ```
+
 ## Contributing
 
 We welcome your contributions! Here's how you can get involved:
