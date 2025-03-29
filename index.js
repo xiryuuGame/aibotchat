@@ -287,6 +287,14 @@ async function bot() {
               JSON.stringify(history, null, 2),
             );
           } catch (error) {
+            let history = {
+              messages: [],
+              lastInteraction: null,
+            };
+            fs.writeFileSync(
+              `./AIHistory/${from}.json`,
+              JSON.stringify(history),
+            );
             console.error("Gagal menyimpan history grup:", error.message);
           }
           // End logic history grup
