@@ -278,7 +278,8 @@ async function bot() {
                 : messageText,
             };
             history.messages.push(newMessage);
-            if (history.messages.length >= 30) {
+            history.lastInteraction = Date.now();
+            if (history.messages.length >= 100) {
               history.messages = history.messages.slice(1);
             }
             fs.writeFileSync(

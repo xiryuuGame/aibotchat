@@ -197,7 +197,7 @@ ini dia hasil response tools: \n\n${tool}`;
   };
   history.messages.push(newMessage);
 
-  if (history.messages.length >= 30) {
+  if (history.messages.length >= 100) {
     history.messages = history.messages.slice(1);
   }
 
