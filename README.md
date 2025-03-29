@@ -1,19 +1,19 @@
-# AIBOTCHAT
+#   AIBOTCHAT
 
 A WhatsApp bot powered by AI, designed for intelligent conversations and tool utilization.
 
-## 🌟 Creators & Contacts 🌟
+##   🌟 Creators & Contacts 🌟
 
-| Platform    | Link                                       | Get in Touch!               |
-|-------------|--------------------------------------------|-------------------------------|
-| GitHub      | [xiryuuGame](https://www.github.com/xiryuuGame)   | Explore my projects!          |
-| Instagram   | [xiryu_05](https://www.instagram.com/xiryu_05/)   | Visual vibes await!            |
-| Threads     | [xiryu_05](https://www.threads.net/@xiryu_05)   | Let's have a chat!            |
-| Email       | [farrel.z.rahmanda@gmail.com](mailto:farrel.z.rahmanda@gmail.com)   | For serious inquiries.      |
+|   Platform     |   Link                                       |   Get in Touch!                  |
+| :------------- | :------------------------------------------ | :------------------------------- |
+|   GitHub       |   [xiryuuGame](https://www.github.com/xiryuuGame)   |   Explore my projects!           |
+|   Instagram    |   [xiryu_05](https://www.instagram.com/xiryu_05/)   |   Visual vibes await!            |
+|   Threads      |   [xiryu_05](https://www.threads.net/@xiryu_05)   |   Let's have a chat!             |
+|   Email        |   [farrel.z.rahmanda@gmail.com](mailto:farrel.z.rahmanda@gmail.com)   |   For serious inquiries.       |
 
 ---
 
-## Features
+##   Features
 
 This bot offers a range of helpful features:
 
@@ -28,13 +28,13 @@ This bot offers a range of helpful features:
 * **Note-Taking:**
     * `note`: Save a note for the AI.
 
-## Environment Variables
+##   Environment Variables
 
 To run this project, you will need to set the following environment variable in your `.env` file:
 
 * `GEMINI_API_KEY`: Your API key for the Gemini AI service.
 
-## Installation
+##   Installation
 
 1.  **Clone the repository:**
 
@@ -56,19 +56,41 @@ To run this project, you will need to set the following environment variable in 
     ./install.sh
     ```
 
-3. **Important:**
+3.  **Important:**
 
-   Change the bot-config.json
-   ```json
-   {
-     "botname": "YOUR BOT NAME",
-     "number": "YOUR BOT NUMBER",
-     "owner": ["OWNER NUMBER", "OWNER NUMBER 2"],
-     "ownerName": "YOUR NAME"
-   }
-   ```
+    Change the `bot-config.json`:
 
-## Contributing
+    ```json
+    {
+        "botname": "YOUR BOT NAME",
+        "number": "YOUR BOT NUMBER",
+        "owner": ["OWNER NUMBER", "OWNER NUMBER 2"],
+        "ownerName": "YOUR NAME"
+    }
+    ```
+
+##   How to Use
+
+This bot can be used in both group chats and private chats on WhatsApp. Here's how to activate and use it:
+
+1.  **Activation/Deactivation:**
+
+    * To **activate** the AI functionality in a chat, send the message: `.toggle`
+    * To **deactivate** the AI functionality, send the message: `.toggle` again.
+
+2.  **User ID Management:**
+
+    * When you use `.toggle` for the first time, your WhatsApp user/group ID will be added to a file named `list.json`. This file keeps track of users who have activated the AI.
+    * The bot will only respond to AI commands from users/groups whose IDs are present in `list.json` and when the AI is active (toggled on).
+
+3.  **Using AI Features:**
+
+    * Once the AI is activated (and your ID is in `list.json`), you can use the features listed above by sending the corresponding commands. For example:
+        * `jadwal mata pelajaran`
+        * `image generator <your prompt>` (e.g., `image generator a cat playing piano`)
+        * `note <your note>` (e.g., `note Remember to buy groceries`)
+
+##   Contributing
 
 We welcome your contributions! Here's how you can get involved:
 
