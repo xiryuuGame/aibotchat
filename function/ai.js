@@ -362,7 +362,7 @@ Ini list tools yang bisa aku pake sekarang:
 
     jadwalpiket() - Buat ngasih jadwal piket yang udah ada di database.
 
-    *groupinformation(sock, from) - Buat ngasih info apa aja tentang grup.
+    *groupinformation(sock, from) - Buat ngasih info apa aja tentang grup, mau nama, anggota, deskripsi, macem macem dah pokoknya.
 
     noted(note) - Buat nyimpen apa yang pengen aku inget ke dalam note.
 
@@ -390,7 +390,7 @@ Cara pake tools-nya (contoh respon. note: ini contoh dari manusia ya. aku bisa j
 
         [jadwaltugas]()
 
-        *[groupinformation](sock, from)
+        [groupinformation](sock, from)
 
         Pastiin pake tool dengan format [namatool] terus dilanjutin sama () dan argumennya (kalau ada).
 
