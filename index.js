@@ -264,6 +264,7 @@ const jadwalPiketFunction = require("./function/jadwalpiket");
 const groupInformationFunction = require("./function/groupinformation");
 const notedFunction = require("./function/noted");
 const iGen = require("./function/imagegenerate");
+const gempaFunction = require("./function/gempa");
 
 function listTools(sock, from) {
   return [
@@ -272,6 +273,7 @@ function listTools(sock, from) {
     { groupinformation: () => groupInformationFunction(sock, from) },
     { noted: (note) => notedFunction(note) },
     { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
+    { gempa: () => gempaFunction() },
   ];
 }
 bot();
