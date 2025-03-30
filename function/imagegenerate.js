@@ -35,7 +35,7 @@ async function iGen(path, prompt, sock, from) {
       generationConfig: { responseModalities: ["Text", "Image"] },
     };
     let imageData = "";
-    if (path !== "ul") {
+    if (path !== "ul" && path !== "null") {
       imageData = fs.readFileSync(path, "base64");
       data.contents[0].parts.push({
         inline_data: {
@@ -75,7 +75,7 @@ async function iGen(path, prompt, sock, from) {
 
     return "(foto telah berhasil di generate)";
   } catch (e) {
-    console.log(e);
+    console.log(JSON.stringify(e, null, 2));
     return "error: foto gagal di generate";
   }
 }

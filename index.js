@@ -139,6 +139,14 @@ async function bot() {
           }
           return;
         }
+        if (m.chat === ".reset") {
+          let history = {
+            messages: [],
+            lastInteraction: null,
+          };
+          fs.writeFileSync(`./AIHistory/${from}.json`, JSON.stringify(history));
+          return;
+        }
         if (toggleAigroup) {
           // Jalankan pemrosesan AI di latar belakang
           Promise.resolve().then(async () => {
@@ -197,16 +205,13 @@ async function bot() {
               let combinedResponse = "";
               for (const toolObj of isTools) {
                 const toolName = toolObj.toolName;
-                const toolArgs = toolObj.toolArgs;
-                const tools = listTools(sock, from);
+                let toolArgs = toolObj.toolArgs;
+                toolArgs = toolArgs.map((arg) => arg.replace(/\\n/g, "\n"));
+                const tools = listTools(sock, from, m);
                 const tool = tools.find((tool) => tool[toolName]);
 
                 let toolResponse;
-                if (toolName === "groupinformation") {
-                  toolResponse = await tool[toolName]();
-                } else {
-                  toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator untuk mengirimkan argumen
-                }
+                toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator untuk mengirimkan argumen
                 console.log(`Tool Response (${toolName}):`, toolResponse);
                 const response2 = await ai(
                   m,
@@ -336,8 +341,9 @@ const groupInformationFunction = require("./function/groupinformation");
 const notedFunction = require("./function/noted");
 const iGen = require("./function/imagegenerate");
 const gempaFunction = require("./function/gempa");
+const requestFunction = require("./function/pullrequest");
 
-function listTools(sock, from) {
+function listTools(sock, from, m) {
   return [
     { jadwaltugas: () => jadwalTugasFunction() },
     { jadwalpiket: () => jadwalPiketFunction() },
@@ -345,6 +351,7 @@ function listTools(sock, from) {
     { noted: (note) => notedFunction(note) },
     { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
     { gempa: () => gempaFunction() },
+    { pullrequest: (text) => requestFunction(text, sock, m) },
   ];
 }
 async function getQuotedMessageContent(quotedMessage, sock) {

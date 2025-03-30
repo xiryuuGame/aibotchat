@@ -1,8 +1,7 @@
 const fs = require("fs");
 async function noted(note) {
   try {
-    let data = [note];
-    fs.writeFileSync("./db/noted.json", JSON.stringify(data, null, 2));
+    fs.writeFileSync("./db/noted.txt", note);
     return "( note berhasil disimpan )";
   } catch (error) {
     console.error("Error saving note:", error);
