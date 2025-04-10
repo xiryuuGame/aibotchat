@@ -89,6 +89,7 @@ async function bot() {
             );
             console.log(`User baru ditambahkan: ${author} - ${m.username}`);
           } else {
+            // User sudah ada
           }
         } catch (error) {
           console.error("Gagal menyimpan data user:", error);
@@ -203,28 +204,39 @@ async function bot() {
                 { quotedMessage: m },
               );
               let combinedResponse = "";
+              const toolResponses = {}; // Objek untuk menyimpan respons dari setiap tool
+
               for (const toolObj of isTools) {
                 const toolName = toolObj.toolName;
                 let toolArgs = toolObj.toolArgs;
                 toolArgs = toolArgs.map((arg) => arg.replace(/\\n/g, "\n"));
                 const tools = listTools(sock, from, m);
-                const tool = tools.find((tool) => tool[toolName]);
+                const tool = tools.find((t) => t[toolName]);
 
                 let toolResponse;
-                toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator untuk mengirimkan argumen
-                console.log(`Tool Response (${toolName}):`, toolResponse);
-                const response2 = await ai(
-                  m,
-                  sock,
-                  `Tool Response (${toolName}):${toolResponse}`,
-                );
-                console.log(`AI Response after Tool (${toolName}):`, response2);
-                combinedResponse = `${response2}`;
+                if (tool && tool[toolName]) {
+                  toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator
+                  console.log(`Tool Response (${toolName}):`, toolResponse);
+                  toolResponses[toolName] = toolResponse;
+                } else {
+                  console.warn(`Tool "${toolName}" tidak ditemukan.`);
+                  toolResponses[toolName] =
+                    `Tool "${toolName}" tidak ditemukan.`;
+                }
               }
+
+              // Gabungkan semua respons tool untuk dikirim kembali ke AI
+              let combinedToolResponse = "";
+              for (const toolName in toolResponses) {
+                combinedToolResponse += `Tool Response (${toolName}): ${toolResponses[toolName]}\n`;
+              }
+
+              const response2 = await ai(m, sock, combinedToolResponse);
+              console.log(`AI Response after Tools:`, response2);
 
               sock.sendMessage(
                 from,
-                { text: combinedResponse, edit: key.key },
+                { text: response2, edit: key.key },
                 { quotedMessage: m },
               );
               return;
@@ -284,7 +296,7 @@ async function bot() {
             };
             history.messages.push(newMessage);
             history.lastInteraction = Date.now();
-            if (history.messages.length >= 100) {
+            if (history.messages.length >= 20) {
               history.messages = history.messages.slice(1);
             }
             fs.writeFileSync(
@@ -335,26 +347,7 @@ function getMessage(message) {
     return "";
   }
 }
-const jadwalTugasFunction = require("./function/jadwaltugas");
-const jadwalPiketFunction = require("./function/jadwalpiket");
-const groupInformationFunction = require("./function/groupinformation");
-const notedFunction = require("./function/noted");
-const iGen = require("./function/imagegenerate");
-const gempaFunction = require("./function/gempa");
-const requestFunction = require("./function/pullrequest");
-
-function listTools(sock, from, m) {
-  return [
-    { jadwaltugas: () => jadwalTugasFunction() },
-    { jadwalpiket: () => jadwalPiketFunction() },
-    { groupinformation: () => groupInformationFunction(sock, from) },
-    { noted: (note) => notedFunction(note) },
-    { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
-    { gempa: () => gempaFunction() },
-    { pullrequest: (text) => requestFunction(text, sock, m) },
-  ];
-}
-async function getQuotedMessageContent(quotedMessage, sock) {
+async function getQuotedMessageContent(quotedMessage, _sock) {
   if (!quotedMessage) {
     return null;
   }
@@ -398,6 +391,29 @@ async function getQuotedMessageContent(quotedMessage, sock) {
   }
 
   return { text: quotedText, imageBase64: quotedImageBase64 };
+}
+
+const jadwalTugasFunction = require("./function/jadwaltugas");
+const jadwalPiketFunction = require("./function/jadwalpiket");
+const groupInformationFunction = require("./function/groupinformation");
+const notedFunction = require("./function/noted");
+const iGen = require("./function/imagegenerate");
+const gempaFunction = require("./function/gempa");
+const requestFunction = require("./function/pullrequest");
+const { downloadMediaMessage } = require("@fizzxydev/baileys-pro");
+const crypto = require("crypto");
+const randomFileName = crypto.randomBytes(10).toString("hex") + ".jpg"; // Contoh untuk gambar
+
+function listTools(sock, from, m) {
+  return [
+    { jadwaltugas: () => jadwalTugasFunction() },
+    { jadwalpiket: () => jadwalPiketFunction() },
+    { groupinformation: () => groupInformationFunction(sock, from) },
+    { noted: (note) => notedFunction(note) },
+    { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
+    { gempa: () => gempaFunction() },
+    { pullrequest: (text) => requestFunction(text, sock, m) },
+  ];
 }
 bot();
 module.exports = { listTools };

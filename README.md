@@ -1,103 +1,118 @@
-#   AIBOTCHAT
+# 🤖 AIBOTCHAT
 
-A WhatsApp bot powered by AI, designed for intelligent conversations and tool utilization.
+Sebuah bot WhatsApp yang ditenagai oleh kecerdasan buatan (AI), dirancang untuk percakapan cerdas dan pemanfaatan berbagai alat.
 
-##   🌟 Creators & Contacts 🌟
+## ✨ Kreator & Kontak ✨
 
-|   Platform     |   Link                                       |   Get in Touch!                  |
-| :------------- | :------------------------------------------ | :------------------------------- |
-|   GitHub       |   [xiryuuGame](https://www.github.com/xiryuuGame)   |   Explore my projects!           |
-|   Instagram    |   [xiryu_05](https://www.instagram.com/xiryu_05/)   |   Visual vibes await!            |
-|   Threads      |   [xiryu_05](https://www.threads.net/@xiryu_05)   |   Let's have a chat!             |
-|   Email        |   [farrel.z.rahmanda@gmail.com](mailto:farrel.z.rahmanda@gmail.com)   |   For serious inquiries.       |
+| Platform  | Tautan                                                            | Hubungi Saya!            |
+| :-------- | :---------------------------------------------------------------- | :----------------------- |
+| GitHub    | [xiryuuGame](https://www.github.com/xiryuuGame)                   | Jelajahi proyek saya!    |
+| Instagram | [xiryu_05](https://www.instagram.com/xiryu_05/)                   | Intip visual saya!       |
+| Threads   | [xiryu_05](https://www.threads.net/@xiryu_05)                     | Mari mengobrol!          |
+| Email     | [farrel.z.rahmanda@gmail.com](mailto:farrel.z.rahmanda@gmail.com) | Untuk pertanyaan serius. |
 
 ---
 
-##   Features
+## ⚙️ Fitur
 
-This bot offers a range of helpful features:
+Bot ini menawarkan berbagai fitur bermanfaat:
 
-* **Schedule Management:**
-    * `jadwal mata pelajaran`: Provides access to class schedules.
-    * `jadwal piket`: Displays duty rosters.
-* **Information:**
-    * `group info`: Retrieves and shares group details.
-    * `info Gempa`: Retrieves and shares earthquakes information.
-* **Content Generation:**
-    * `image generator`: Creates images based on prompts.
-* **Note-Taking:**
-    * `note`: Save a note for the AI.
+- **Manajemen Jadwal:**
+  - `jadwal mata pelajaran`: Menyediakan akses ke jadwal pelajaran.
+  - `jadwal piket`: Menampilkan daftar piket.
+  - `jadwal tugas`: Menampilkan daftar tugas.
+- **Informasi:**
+  - `group info`: Mengambil dan membagikan detail grup.
+  - `info Gempa`: Mengambil dan membagikan informasi gempa terkini.
+- **Pembuatan Konten:**
+  - `image generator`: Membuat gambar berdasarkan perintah teks.
+  - `sticker`: Membuat stiker dari gambar atau teks.
+- **Pencatatan:**(**sedang dimatikan**)
 
-##   Environment Variables
+  - `note`: Menyimpan catatan untuk AI. \* `noted list`: Menampilkan daftar catatan yang telah disimpan.
+  - `delete note`: Menghapus catatan berdasarkan indeks.
 
-To run this project, you will need to set the following environment variable in your `.env` file:
+## 🔑 Variabel Lingkungan
 
-* `GEMINI_API_KEY`: Your API key for the Gemini AI service.
+Untuk menjalankan proyek ini, Anda perlu mengatur variabel lingkungan berikut dalam file `.env` Anda:
 
-##   Installation
+- `GEMINI_API_KEY`: Kunci API Anda untuk layanan Gemini AI.
 
-1.  **Clone the repository:**
+## 🛠️ Instalasi
 
-    ```bash
-    git clone [https://github.com/xiryuuGame/aibotchat](https://github.com/xiryuuGame/aibotchat)
-    cd aibotchat/
-    ```
+1. **Klon repositori:**
 
-2.  **Run the installation script:**
+   ```bash
+   git clone [https://github.com/xiryuuGame/aibotchat](https://github.com/xiryuuGame/aibotchat)
+   cd aibotchat/
+   ```
 
-    ```bash
-    ./install.sh
-    ```
+2. **Jalankan skrip instalasi:**
 
-    This script will handle the necessary setup. Ensure you have the correct permissions to execute the script. If you encounter permission issues, grant execute permissions:
+   ```bash
+   ./install.sh
+   ```
 
-    ```bash
-    chmod +x install.sh
-    ./install.sh
-    ```
+   Skrip ini akan menangani pengaturan yang diperlukan. Pastikan Anda memiliki izin yang benar untuk menjalankan skrip. Jika Anda mengalami masalah izin, berikan izin eksekusi:
 
-3.  **Important:**
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
 
-    Change the `bot-config.json`:
+3. **Konfigurasi Bot:**
 
-    ```json
-    {
-        "botname": "YOUR BOT NAME",
-        "number": "YOUR BOT NUMBER",
-        "owner": ["OWNER NUMBER", "OWNER NUMBER 2"],
-        "ownerName": "YOUR NAME"
-    }
-    ```
+   Ubah file `bot-config.json`:
 
-##   How to Use
+   ```json
+   {
+     "botname": "NAMA BOT ANDA",
+     "number": "NOMOR BOT ANDA",
+     "owner": ["NOMOR PEMILIK 1", "NOMOR PEMILIK 2"],
+     "ownerName": "NAMA ANDA"
+   }
+   ```
 
-This bot can be used in both group chats and private chats on WhatsApp. Here's how to activate and use it:
+## 🚀 Cara Penggunaan
 
-1.  **Activation/Deactivation:**
+Bot ini dapat digunakan dalam obrolan grup dan obrolan pribadi di WhatsApp. Berikut cara mengaktifkan dan menggunakannya:
 
-    * To **activate** the AI functionality in a chat, send the message: `.toggle`
-    * To **deactivate** the AI functionality, send the message: `.toggle` again.
+1. **Aktivasi/Deaktivasi AI:**
 
-2.  **User ID Management:**
+   - Untuk **mengaktifkan** fungsionalitas AI dalam obrolan, kirim pesan: `.toggle`
+   - Untuk **menonaktifkan** fungsionalitas AI, kirim pesan: `.toggle` lagi.
 
-    * When you use `.toggle` for the first time, your WhatsApp user/group ID will be added to a file named `list.json`. This file keeps track of users who have activated the AI.
-    * The bot will only respond to AI commands from users/groups whose IDs are present in `list.json` and when the AI is active (toggled on).
+2. **Manajemen ID Pengguna:**
 
-3.  **Using AI Features:**
+   - Saat Anda menggunakan `.toggle` untuk pertama kali, ID pengguna/grup WhatsApp Anda akan ditambahkan ke file bernama `list.json`. File ini mencatat pengguna yang telah mengaktifkan AI.
+   - Bot hanya akan menanggapi perintah AI dari pengguna/grup yang ID-nya ada di `list.json` dan ketika AI aktif (diaktifkan).
 
-    * Once the AI is activated (and your ID is in `list.json`), you can use the features listed above by sending the corresponding commands. For example:
-        * `jadwal mata pelajaran`
-        * `image generator <your prompt>` (e.g., `image generator a cat playing piano`)
-        * `note <your note>` (e.g., `note Remember to buy groceries`)
+3. **Menggunakan Fitur AI:**
 
-##   Contributing
+   - Setelah AI diaktifkan (dan ID Anda ada di `list.json`), Anda dapat menggunakan fitur-fitur yang tercantum di atas dengan mengirimkan perintah yang sesuai. Contoh:
+     - `jadwal mata pelajaran`
+     - `jadwal piket`
+     - `jadwal tugas`
+     - `group info`
+     - `info Gempa`
+     - `image generator <perintah Anda>` (misalnya, `image generator seekor kucing bermain piano`)
+     - `sticker <balas gambar atau kirim teks>` (misalnya, balas gambar dengan `.sticker` atau kirim `.sticker teks`)
+     - `note <catatan Anda>` (misalnya, `note Ingat beli bahan makanan`)
+     - `noted list`
+     - `delete note <indeks catatan>` (misalnya, `delete note 1` untuk menghapus catatan pertama)
 
-We welcome your contributions! Here's how you can get involved:
+4. **Reset History tempat anda berbicara:**
 
-1.  **Fork the repository.**
-2.  **Create a new branch** for your changes: `git checkout -b my-contribution`.
-3.  **Make your changes** and commit them: `git commit -am 'Add some feature'`.
-4.  **Push your changes** to your fork: `git push origin my-contribution`.
-5.  **Create a pull request** on GitHub to propose your changes.
+   - Untuk **Mereset** History AI dalam obrolan, kirim pesan: `.reset`
 
-Please ensure your code adheres to the existing style and includes relevant tests to maintain code quality.
+## 🤝 Kontribusi
+
+Kami menyambut kontribusi Anda! Berikut cara Anda dapat terlibat:
+
+1. **Fork repositori ini.**
+2. **Buat branch baru** untuk perubahan Anda: `git checkout -b fitur-baru`.
+3. **Lakukan perubahan** dan commit: `git commit -am 'Menambahkan fitur baru'`.
+4. **Push perubahan** ke fork Anda: `git push origin fitur-baru`.
+5. **Buat pull request** di GitHub untuk mengusulkan perubahan Anda.
+
+Pastikan kode Anda sesuai dengan gaya yang ada dan menyertakan pengujian yang relevan untuk menjaga kualitas kode.
