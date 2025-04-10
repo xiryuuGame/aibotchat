@@ -7,7 +7,7 @@ const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-
 
 async function iGen(path, prompt, sock, from) {
   try {
-    path = path.slice(1, -1);
+    path = path.replace(/["'`]/g, "");
     const data = {
       contents: [
         {
