@@ -1,3 +1,4 @@
+// index.js
 const ai = require("./function/ai");
 const makeWASocket = require("@fizzxydev/baileys-pro").default;
 const {
@@ -8,6 +9,7 @@ const {
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
+const path = require("path"); // Tambahkan modul path
 const global = JSON.parse(fs.readFileSync("bot-config.json"));
 
 async function bot() {
@@ -191,7 +193,10 @@ async function bot() {
             const toolMatches = [...response.matchAll(/\[(.*?)\]\((.*?)\)$/gm)];
             for (const toolMatch of toolMatches) {
               const toolName = toolMatch[1];
-              const toolArgs = ekstrakNilaiDalamKurung(toolMatch[0]); // Menggunakan fungsi ekstrakNilaiDalamKurung
+              let toolArgs = ekstrakNilaiDalamKurung(toolMatch[0]); // Menggunakan fungsi ekstrakNilaiDalamKurung
+              if (toolArgs.length === 0) {
+                toolArgs.push("");
+              }
               isTools.push({ toolName, toolArgs });
             }
 
@@ -393,27 +398,35 @@ async function getQuotedMessageContent(quotedMessage, _sock) {
   return { text: quotedText, imageBase64: quotedImageBase64 };
 }
 
-const jadwalTugasFunction = require("./function/jadwaltugas");
-const jadwalPiketFunction = require("./function/jadwalpiket");
-const groupInformationFunction = require("./function/groupinformation");
-const notedFunction = require("./function/noted");
-const iGen = require("./function/imagegenerate");
-const gempaFunction = require("./function/gempa");
-const requestFunction = require("./function/pullrequest");
 const { downloadMediaMessage } = require("@fizzxydev/baileys-pro");
 const crypto = require("crypto");
 const randomFileName = crypto.randomBytes(10).toString("hex") + ".jpg"; // Contoh untuk gambar
 
 function listTools(sock, from, m) {
-  return [
-    { jadwaltugas: () => jadwalTugasFunction() },
-    { jadwalpiket: () => jadwalPiketFunction() },
-    { groupinformation: () => groupInformationFunction(sock, from) },
-    { noted: (note) => notedFunction(note) },
-    { generateimage: (path, prompt) => iGen(path, prompt, sock, from) },
-    { gempa: () => gempaFunction() },
-    { pullrequest: (text) => requestFunction(text, sock, m) },
-  ];
+  const tools = {};
+  const functionDirectory = path.join(__dirname, "function");
+  const files = fs.readdirSync(functionDirectory);
+
+  files.forEach((file) => {
+    if (file.endsWith(".js") && file !== "ai.js" && file !== "index.js") {
+      const functionName = path.basename(file, ".js");
+      const module = require(path.join(functionDirectory, file));
+
+      // Asumsi: setiap file function mengekspor sebuah fungsi utama
+      if (typeof module === "function") {
+        tools[functionName] = (...args) => module(...args, sock, from, m);
+      } else if (typeof module === "object") {
+        // Asumsi: jika berupa objek, cari fungsi pertama yang bukan merupakan properti lain
+        for (const key in module) {
+          if (typeof module[key] === "function") {
+            tools[key] = (...args) => module[key](...args, sock, from, m);
+            break; // Hanya ambil fungsi pertama
+          }
+        }
+      }
+    }
+  });
+  return [tools];
 }
 bot();
 module.exports = { listTools };
