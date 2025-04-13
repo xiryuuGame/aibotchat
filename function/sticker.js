@@ -1,7 +1,7 @@
 const fs = require("fs").promises; // Use promises for async operations
 const { Sticker, StickerTypes } = require("wa-sticker-toolkit");
 
-async function sticker(sock, from, path) {
+async function sticker(path, sock, from) {
   path = path.replace(/["'`]/g, "");
   let webpPath = "./temp/sticker.webp";
 

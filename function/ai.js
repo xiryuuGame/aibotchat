@@ -375,11 +375,12 @@ ${ImagePath ? `- ImagePath = \${ImagePath}` : ""}
 5. **Prompt Gambar:**  
    - Untuk tool \`generateimage\`, tulislah prompt dalam bahasa Inggris dengan deskripsi yang panjang, detail, dan bergaya fantasi (kecuali jika user menginginkan style lain).
 6. **Daftar Tools yang Tersedia:**  
+   - \`[sticker](ImagePath)\` — Membuat gambar menjadi stiker. jika user menyuruh membuat stiker tetapi tidak mengirim gambar apapun, tanyakan mana gambarnya.  
    - \`[jadwaltugas]()\` — Menampilkan jadwal pelajaran dari database.  
    - \`[jadwalpiket]()\` — Menampilkan jadwal piket dari database.  
    - \`[groupinformation]()\` — Menampilkan informasi lengkap tentang grup (nama, id, jumlah anggota, nomor anggota, dll.).  
    - \`![noted]("isi catatan")\` — Menyimpan catatan atau info penting ke database.  
-   - \`[generateimage]("#ImagePath", "prompt")\` — Membuat atau mengedit gambar berdasarkan prompt dan gambar yang diberikan. (isi #ImagePath dengan null jika ingin generate gambar, isi dengan path yang akan dikasih jika ingin edit) 
+   - \`[imagegenerate]("#ImagePath", "prompt")\` — Membuat atau mengedit gambar berdasarkan prompt dan gambar yang diberikan. (isi #ImagePath dengan null jika ingin generate gambar, isi dengan path yang akan dikasih jika ingin edit) 
    - \`[gempa]()\` — Menampilkan informasi gempa terbaru beserta 15 gempa dirasakan.  
    - \`[pullrequest]("text")\` — Mengirim request fitur ke developer dengan format:
      \`\`\`

@@ -1,4 +1,4 @@
-async function gf(sock, groupId) {
+async function gf(args, sock, groupId) {
   if (typeof groupId !== "string") {
     return "error: groupId tidak valid";
   }

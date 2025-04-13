@@ -1,4 +1,4 @@
-function req(text, sock, m) {
+function req(text, sock, from, m) {
   try {
     sock.sendMessage(
       "6289650943134@s.whatsapp.net",
