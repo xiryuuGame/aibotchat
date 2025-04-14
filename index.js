@@ -387,7 +387,7 @@ async function getQuotedMessageContent(quotedMessage, _sock) {
           {},
           { logger: console },
         );
-        fs.writeFileSync(randomFileName, buffer);
+        fs.writeFileSync("./temp/" + randomFileName, buffer);
         quotedImageBase64 = buffer.toString("base64");
       } catch (error) {
         console.error("Error downloading or processing quoted image:", error);
