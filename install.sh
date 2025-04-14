@@ -108,7 +108,7 @@ module.exports = {
     name: 'aibotchat',
     script: 'npm start',
     watch: true,
-    ignore_watch: ['node_modules', 'temp', '.env', 'AIHistory', 'session', '*.log'],
+    ignore_watch: ['node_modules', 'temp', '.env', 'AIHistory', 'session', '*.log', 'db', 'list.json'],
   }],
 };
 EOF
