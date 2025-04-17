@@ -381,6 +381,7 @@ ${ImagePath ? `- ImagePath = \${ImagePath}` : ""}
    - \`[groupinformation]()\` — Menampilkan informasi lengkap tentang grup (nama, id, jumlah anggota, nomor anggota, dll.).  
    - \`![noted]("isi catatan")\` — Menyimpan catatan atau info penting ke database.  
    - \`[imagegenerate]("#ImagePath", "prompt")\` — Membuat atau mengedit gambar berdasarkan prompt dan gambar yang diberikan. (isi #ImagePath dengan null jika ingin generate gambar, isi dengan path yang akan dikasih jika ingin edit) 
+   - \`[sosmeddownloader]("url", 'sosmedType')\` — Mendownload media dari social media menggunakan link yang dikirim user. Isi sosmedType dengan instagram,ig,facebook,fb,tiktok,tt,twitter,x. Jika user tidak mengirimkan link, tanyakan linknya dimana?.
    - \`[gempa]()\` — Menampilkan informasi gempa terbaru beserta 15 gempa dirasakan.  
    - \`[pullrequest]("text")\` — Mengirim request fitur ke developer dengan format:
      \`\`\`
