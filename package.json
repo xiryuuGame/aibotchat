@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "startpm2": "pm2 start ecosystem.config.js --watch"
+    "startpm2": "pm2 stop aibotchat && pm2 flush && pm2 start ecosystem.config.js --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "@fizzxydev/baileys-pro": "^8.6.11",
     "@hapi/boom": "^10.0.1",
     "axios": "^1.8.4",
+    "btch-downloader": "^3.7.18",
     "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
     "fs": "^0.0.1-security",
