@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "startpm2": "pm2 stop aibotchat && pm2 flush && pm2 start ecosystem.config.js --watch"
+    "startpm2": "pm2 stop aibotchat ; pm2 flush ; pm2 start ecosystem.config.js --watch"
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,13 @@
     "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
     "fs": "^0.0.1-security",
+    "got": "^11.8.6",
     "jimp": "^0.16.13",
     "path": "^0.12.7",
     "pino": "^9.6.0",
-    "wa-sticker-toolkit": "^0.0.4"
+    "uuid": "^11.1.0",
+    "wa-sticker-toolkit": "^0.0.4",
+    "youtube-dl-exec": "^3.0.20",
+    "yt-search": "^2.12.1"
   }
 }
