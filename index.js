@@ -1,5 +1,5 @@
 // index.js
-const ai = require("./function/ai");
+const ai = require("./src/ai");
 const makeWASocket = require("@fizzxydev/baileys-pro").default;
 const {
   useMultiFileAuthState,
@@ -74,9 +74,9 @@ async function bot() {
         let from = m.key.remoteJid || m.key.participant || m.participant;
         let author = m.participant || m.key.participant || m.key.remoteJid;
         let isGroup = from.endsWith("@g.us");
-        let toggleAigroup = JSON.parse(fs.readFileSync("./list.json")).includes(
-          from,
-        );
+        let toggleAigroup = JSON.parse(
+          fs.readFileSync("./db/list.json"),
+        ).includes(from);
 
         // Logic untuk menyimpan data user ke user.json
         try {
@@ -117,11 +117,11 @@ async function bot() {
         );
 
         if (m.chat === ".toggle") {
-          const list = JSON.parse(fs.readFileSync("./list.json"));
+          const list = JSON.parse(fs.readFileSync("./db/list.json"));
           const index = list.indexOf(from);
           if (index > -1) {
             list.splice(index, 1);
-            fs.writeFileSync("./list.json", JSON.stringify(list));
+            fs.writeFileSync("./db/list.json", JSON.stringify(list));
             sock.sendMessage(
               from,
               {
@@ -131,7 +131,7 @@ async function bot() {
             );
           } else {
             list.push(from);
-            fs.writeFileSync("./list.json", JSON.stringify(list));
+            fs.writeFileSync("./db/list.json", JSON.stringify(list));
             sock.sendMessage(
               from,
               {
@@ -220,6 +220,9 @@ async function bot() {
                 for (const match of toolMatches) {
                   const toolName = match[1];
                   const toolArgs = ekstrakNilaiDalamKurung(match[0]);
+                  if (toolArgs.length === 0) {
+                    toolArgs.push("");
+                  }
                   toolsToRun.push({ toolName, toolArgs });
                 }
 
@@ -423,7 +426,7 @@ const randomFileName = crypto.randomBytes(10).toString("hex") + ".jpg"; // Conto
 
 function listTools(sock, from, m) {
   const tools = {};
-  const functionDirectory = path.join(__dirname, "function");
+  const functionDirectory = path.join(__dirname, "src");
   const files = fs.readdirSync(functionDirectory);
 
   files.forEach((file) => {

@@ -6,6 +6,7 @@ function/jadwalpiket.js
 temp/
 *.log
 logs/
+log/
 *.config
 local.ini
 build/

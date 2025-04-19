@@ -56,7 +56,7 @@ async function iGen(path, prompt, sock, from) {
 
     const response = await axios(options);
 
-    fs.writeFileSync("./log.log", JSON.stringify(response.data, null, 2));
+    fs.writeFileSync("./log/log.log", JSON.stringify(response.data, null, 2));
     if (response.data.candidates[0].finishReason === "IMAGE_SAFETY") {
       return "error: foto gagal di generate dikarenakan safety";
     }
