@@ -84,6 +84,15 @@ else
   echo "${GREEN}File noted.json telah dibuat.${NC}"
 fi
 
+# Membuat file list.json
+echo "${GREEN}Membuat file list.json...${NC}"
+if [ -f db/list.json ]; then
+  echo "${YELLOW}list.json sudah ada.${NC}"
+else
+  touch db/list.json &>/dev/null
+  echo "${GREEN}File list.json telah dibuat.${NC}"
+fi
+
 # Instalasi PM2 (opsional)
 read -p "Apakah Anda ingin menginstal PM2? (y/n): " INSTALL_PM2
 
@@ -113,7 +122,7 @@ module.exports = {
     name: 'aibotchat',
     script: 'npm start',
     watch: true,
-    ignore_watch: ['node_modules', 'temp', '.env', 'AIHistory', 'session', '*.log', 'db', 'list.json'],
+    ignore_watch: ['node_modules', 'temp', '.env', 'AIHistory', 'session', '*.log', 'db', 'list.json', 'log'],
   }],
 };
 EOF

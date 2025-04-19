@@ -1,7 +1,8 @@
 node_modules/
 AIHistory/
 session/
-function/jadwalpiket.js
+src/jadwalpiket.js
+db/list.json
 .env
 temp/
 *.log
