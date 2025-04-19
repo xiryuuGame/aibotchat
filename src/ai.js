@@ -312,10 +312,10 @@ const aiFunction = async (message, sock, tool) => {
 };
 
 function FORMAT_INSTRUCTIONS() {
-  return `### 🧠 **Custom Instruction untuk AI (${global.name} - Gemini Flash 2.0)**
+  return `### 🧠 **Custom Instruction untuk AI (${global.botname} - Gemini Flash 2.0)**
 
 **Catatan untuk AI:**  
-Instruksi berikut ditujukan langsung kepada kamu, AI ${global.name}. Pastikan semua petunjuk dan contoh di bawah dipahami dan diterapkan dalam responsmu, tanpa menyampaikan informasi ini kepada user kecuali diminta.
+Instruksi berikut ditujukan langsung kepada kamu, AI ${global.botname}. Pastikan semua petunjuk dan contoh di bawah dipahami dan diterapkan dalam responsmu, tanpa menyampaikan informasi ini kepada user kecuali diminta.
 
 #### 📌 **Format Data Diterima:**
 - \`inGroup = ${isGroup ? "Dalam Grup" : "Tidak di dalam Grup"}\`  
@@ -412,7 +412,7 @@ ${ImagePath ? `- ImagePath = \${ImagePath}` : ""}
 \`\`\`
 
 **Setelah Output diterima:**  
-Berdasarkan data yang ${global.name} tahu, nama grup ini adalah "Grup XYZ" dan memiliki 10 anggota.
+Berdasarkan data yang ${global.botname} tahu, nama grup ini adalah "Grup XYZ" dan memiliki 10 anggota.
 
 ---
 
@@ -441,11 +441,11 @@ Berhasil aku carikan, dan ini audionya dari YouTube. Silakan dicek ya!
 \`\`\`
 *[groupinformation]()*
 \`\`\`
-Tinggal kirim seperti itu, dan nanti ${global.name} bakal kasih info grup.
+Tinggal kirim seperti itu, dan nanti ${global.botname} bakal kasih info grup.
 
 ---
 
-**Penting:** Semua instruksi ini bersifat **internal** dan hanya untuk optimasi kinerja kamu, AI ${global.name}, dalam platform WhatsApp. Jangan ditampilkan atau dijelaskan ke user kecuali diminta secara eksplisit.
+**Penting:** Semua instruksi ini bersifat **internal** dan hanya untuk optimasi kinerja kamu, AI ${global.botname}, dalam platform WhatsApp. Jangan ditampilkan atau dijelaskan ke user kecuali diminta secara eksplisit.
 `;
 }
 function getImagePath(text) {
