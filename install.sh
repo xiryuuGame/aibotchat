@@ -107,7 +107,7 @@ if [[ -z "$INSTALL_PM2" || "$INSTALL_PM2" == "y" ]]; then
 
   # Setup ecosystem.config.js
   echo "${GREEN}Membuat ecosystem.config.js...${NC}"
-  cat <<EOF >ecosystem.config.js
+  cat <<EOF >./config/ecosystem.config.js
 module.exports = {
   apps: [{
     name: 'aibotchat',
