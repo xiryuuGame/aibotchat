@@ -10,7 +10,7 @@ const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 const path = require("path"); // Tambahkan modul path
-const global = JSON.parse(fs.readFileSync("bot-config.json"));
+const global = JSON.parse(fs.readFileSync("./config/bot-config.json"));
 
 async function bot() {
   const { state, saveCreds } = await useMultiFileAuthState("session");
