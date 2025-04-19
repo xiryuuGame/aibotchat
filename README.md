@@ -24,11 +24,14 @@ Bot ini menawarkan berbagai fitur bermanfaat:
 - **Informasi:**
   - `group info`: Mengambil dan membagikan detail grup.
   - `info Gempa`: Mengambil dan membagikan informasi gempa terkini.
+  - `youtube search`: Mengambil dan membagikan informasi video dari youtube.
 - **Pembuatan Konten:**
   - `image generator`: Membuat gambar berdasarkan perintah teks.
   - `sticker`: Membuat stiker dari gambar atau teks.
+- **Utilitas**
+  - `Sosmed downloader`: Mendownload video, foto, atau audio dari berbagai sosmed seperti youtube, instagram, tiktok, facebook, dll.
+  - `sticker`: Membuat stiker dari gambar atau teks.
 - **Pencatatan:**(**sedang dimatikan**)
-
   - `note`: Menyimpan catatan untuk AI. \* `noted list`: Menampilkan daftar catatan yang telah disimpan.
   - `delete note`: Menghapus catatan berdasarkan indeks.
 
