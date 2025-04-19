@@ -6,7 +6,7 @@ async function ytse(title) {
     return JSON.stringify(data, null, 2);
   } catch (err) {
     console.log(err);
-    return "( Gagal mencari ): " + err.messages;
+    return "( Gagal mencari ): " + err.message;
   }
 }
 
