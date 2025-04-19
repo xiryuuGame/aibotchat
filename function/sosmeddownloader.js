@@ -1,4 +1,5 @@
-const { twitter, igdl, youtube, fbdown, ttdl } = require("btch-downloader");
+const { twitter, igdl, fbdown, ttdl } = require("btch-downloader");
+const youtube = require("./ytdownload.js");
 const mediaDownloader = require("./mediadownloader.js");
 
 async function sosmed(url, sosmedType, sock, from) {
@@ -13,6 +14,7 @@ async function sosmed(url, sosmedType, sock, from) {
       case "instagram":
         try {
           data = await igdl(url);
+          console.log(data);
           const actualLength = Math.sqrt(data.length); // Kembalikan ke jumlah data asli
 
           for (let i = 0; i < actualLength; i++) {
@@ -43,6 +45,7 @@ async function sosmed(url, sosmedType, sock, from) {
       case "tiktok":
         try {
           data = await ttdl(url);
+          console.log(data);
           let caption = `${data.title}\n\naudio: ${data.title_audio}\n\ntiktok foto(ImageSlideshow) saat ini *MASIH BELUM TERSEDIA*`;
           let downloadedMedia = await mediaDownloader(data.video[0]);
           await sock.sendMessage(from, {
@@ -81,14 +84,20 @@ async function sosmed(url, sosmedType, sock, from) {
       case "yt":
         try {
           data = await youtube(url);
-          let caption = `${data.title}\n\nAuthor: ${data.author}\n\nDownloader youtube hanya melayani audio`;
-          let downloadedMedia = await mediaDownloader(data.mp3);
+          console.log(data.title);
+          console.log(data.author);
+          console.log(data.filename);
+
+          let caption = `Title: *${data.title}*\n\nAuthor: *${data.author}*\n\n Downloader youtube *HANYA MELAYANI AUDIO*`;
           await sock.sendMessage(from, {
-            audio: { url: "./temp/" + downloadedMedia },
+            document: { url: "./temp/" + data.filename },
             mimetype: "audio/mp3",
-            filename: data.title,
+            fileName: data.title + ".mp3",
           });
-          await sock.sendMessage(from, { text: caption });
+          await sock.sendMessage(from, {
+            text: caption,
+          });
+
           data = "Berhasil diunduh";
         } catch (err) {
           console.log(err);
