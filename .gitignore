@@ -15,4 +15,4 @@ dist/
 Thumbs.db
 *.js.map
 db/
-ecosystem.config.js
+config/ecosystem.config.js
