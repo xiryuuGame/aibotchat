@@ -61,6 +61,11 @@ echo "${GREEN}Membuat folder db...${NC}"
 mkdir -p db &>/dev/null
 echo "${GREEN}Folder db telah dibuat.${NC}"
 
+# Membuat folder log
+echo "${GREEN}Membuat folder log...${NC}"
+mkdir -p log &>/dev/null
+echo "${GREEN}Folder log telah dibuat.${NC}"
+
 # Membuat file user.json
 echo "${GREEN}Membuat file user.json...${NC}"
 if [ -f db/user.json ]; then
