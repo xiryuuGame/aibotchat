@@ -14,5 +14,4 @@ dist/
 .DS_Store
 Thumbs.db
 *.js.map
-db/
 config/ecosystem.config.js
