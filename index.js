@@ -203,47 +203,66 @@ async function bot() {
             console.log(isTools);
 
             if (isTools.length > 0) {
-              const key = await sock.sendMessage(
-                from,
-                { text: response },
-                { quotedMessage: m },
-              );
-              let combinedResponse = "";
-              const toolResponses = {}; // Objek untuk menyimpan respons dari setiap tool
+              let currentResponse = response;
+              let currentToolOutput = "";
+              let key;
 
-              for (const toolObj of isTools) {
-                const toolName = toolObj.toolName;
-                let toolArgs = toolObj.toolArgs;
-                toolArgs = toolArgs.map((arg) => arg.replace(/\\n/g, "\n"));
-                const tools = listTools(sock, from, m);
-                const tool = tools.find((t) => t[toolName]);
-
-                let toolResponse;
-                if (tool && tool[toolName]) {
-                  toolResponse = await tool[toolName](...toolArgs); // Menggunakan spread operator
-                  console.log(`Tool Response (${toolName}):`, toolResponse);
-                  toolResponses[toolName] = toolResponse;
-                } else {
-                  console.warn(`Tool "${toolName}" tidak ditemukan.`);
-                  toolResponses[toolName] =
-                    `Tool "${toolName}" tidak ditemukan.`;
+              // Jalankan selama response dari AI mengandung tools
+              while (true) {
+                const toolMatches = [
+                  ...currentResponse.matchAll(/\[(.*?)\]\((.*?)\)$/gm),
+                ];
+                if (toolMatches.length === 0) {
+                  break;
                 }
+
+                const toolsToRun = [];
+                for (const match of toolMatches) {
+                  const toolName = match[1];
+                  const toolArgs = ekstrakNilaiDalamKurung(match[0]);
+                  toolsToRun.push({ toolName, toolArgs });
+                }
+
+                console.log(toolsToRun);
+
+                // Kirim response sementara dari AI jika pertama kali
+                if (!key) {
+                  key = await sock.sendMessage(
+                    from,
+                    { text: currentResponse },
+                    { quotedMessage: m },
+                  );
+                }
+
+                let combinedToolResponse = "";
+                for (const { toolName, toolArgs } of toolsToRun) {
+                  const cleanedArgs = toolArgs.map((arg) =>
+                    arg.replace(/\\n/g, "\n"),
+                  );
+                  const tools = listTools(sock, from, m);
+                  const tool = tools.find((t) => t[toolName]);
+
+                  let toolResponse;
+                  if (tool && tool[toolName]) {
+                    toolResponse = await tool[toolName](...cleanedArgs);
+                    console.log(`Tool Response (${toolName}):`, toolResponse);
+                  } else {
+                    toolResponse = `Tool "${toolName}" tidak ditemukan.`;
+                    console.warn(toolResponse);
+                  }
+                  combinedToolResponse += `Tool Response (${toolName}): ${toolResponse}\n`;
+                }
+
+                // Jalankan AI ulang dengan output tool
+                currentResponse = await ai(m, sock, combinedToolResponse);
+                console.log(`AI Response after Tools:`, currentResponse);
+                // Kirim hasil akhir
+                await sock.sendMessage(
+                  from,
+                  { text: currentResponse, edit: key?.key },
+                  { quotedMessage: m },
+                );
               }
-
-              // Gabungkan semua respons tool untuk dikirim kembali ke AI
-              let combinedToolResponse = "";
-              for (const toolName in toolResponses) {
-                combinedToolResponse += `Tool Response (${toolName}): ${toolResponses[toolName]}\n`;
-              }
-
-              const response2 = await ai(m, sock, combinedToolResponse);
-              console.log(`AI Response after Tools:`, response2);
-
-              sock.sendMessage(
-                from,
-                { text: response2, edit: key.key },
-                { quotedMessage: m },
-              );
               return;
             }
 
