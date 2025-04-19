@@ -30,7 +30,6 @@ Bot ini menawarkan berbagai fitur bermanfaat:
   - `sticker`: Membuat stiker dari gambar atau teks.
 - **Utilitas**
   - `Sosmed downloader`: Mendownload video, foto, atau audio dari berbagai sosmed seperti youtube, instagram, tiktok, facebook, dll.
-  - `sticker`: Membuat stiker dari gambar atau teks.
 - **Pencatatan:**(**sedang dimatikan**)
   - `note`: Menyimpan catatan untuk AI. \* `noted list`: Menampilkan daftar catatan yang telah disimpan.
   - `delete note`: Menghapus catatan berdasarkan indeks.
