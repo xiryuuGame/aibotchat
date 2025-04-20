@@ -102,6 +102,7 @@ async function bot() {
 
         m.chat = getMessage(m.message) || "";
         m.username = m.pushName;
+        m.id = m.key?.id;
 
         console.log(chalk.black(chalk.bgGreen("Message : ")), m.chat);
         console.log(
@@ -150,6 +151,27 @@ async function bot() {
           fs.writeFileSync(`./AIHistory/${from}.json`, JSON.stringify(history));
           return;
         }
+
+        //chat history logic
+        try {
+          if (!fs.existsSync(`./chatHistory/${from}.json`)) {
+            fs.writeFileSync(`./chatHistory/${from}.json`, JSON.stringify([]));
+          }
+          let chatHistory = JSON.parse(
+            fs.readFileSync(`./chatHistory/${from}.json`),
+          );
+          if (chatHistory.length >= 100) {
+            chatHistory.slice(1);
+          }
+          chatHistory.push(m);
+          fs.writeFileSync(
+            `./chatHistory/${from}.json`,
+            JSON.stringify(chatHistory, null, 2),
+          );
+        } catch (err) {
+          console.error("gagal menyimpan chat history", err);
+        }
+
         if (toggleAigroup) {
           // Jalankan pemrosesan AI di latar belakang
           Promise.resolve().then(async () => {
@@ -282,6 +304,8 @@ async function bot() {
               m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
             const quotedfromparticipant =
               m.message?.extendedTextMessage?.contextInfo?.participant;
+            const quotedMessageID =
+              m.message?.extendedTextMessage?.contextInfo?.stanzaId;
             const quotedContent = await getQuotedMessageContent(
               quotedMessage,
               sock,
@@ -311,10 +335,11 @@ async function bot() {
                 quotedMessageText += `imagePath: ${randomFileName}\n\n[IMAGE]`;
               }
               if (quotedContent.text) {
-                quotedMessageText += `<reply message>from ${quotedfromusername}/${quotedfromparticipant} : ${quotedContent.text}</reply message>`;
+                quotedMessageText += `<reply message ID:${quotedMessageID}>from ${quotedfromusername}/${quotedfromparticipant} : ${quotedContent.text}</reply message>`;
               }
             }
-            let messageText = `from ${m.pushName}/${author} : ` + m.chat;
+            let messageText =
+              `message ID:${m.id}, from ${m.pushName}/${author} : ` + m.chat;
             const newMessage = {
               role: "user",
               content: quotedMessageText
@@ -399,6 +424,8 @@ async function getQuotedMessageContent(quotedMessage, _sock) {
       quotedText = quotedMessage.imageMessage.caption;
     } else if (quotedMessage.videoMessage?.caption) {
       quotedText = quotedMessage.videoMessage.caption;
+    } else if (quotedMessage.stickerMessage) {
+      quotedText = "[Stiker]";
     }
 
     if (quotedMessage.imageMessage) {

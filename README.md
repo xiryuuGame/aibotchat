@@ -29,6 +29,7 @@ Bot ini menawarkan berbagai fitur bermanfaat:
 - **Pembuatan Konten:**
   - `image generator`: Membuat gambar berdasarkan perintah teks.
   - `sticker`: Membuat stiker dari gambar atau teks.
+  - `sticker to image`: Membuat stiker menjadi foto kembali.
 - **Utilitas**
   - `Sosmed downloader`: Mendownload video, foto, atau audio dari berbagai sosmed seperti youtube, instagram, tiktok, facebook, dll.
   - `web scraping`: Mengambil data teks dari dalam suatu web.
