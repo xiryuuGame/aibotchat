@@ -1,5 +1,6 @@
 node_modules/
 AIHistory/
+chatHistory/
 session/
 src/jadwalpiket.js
 db/list.json

@@ -61,6 +61,11 @@ echo "${GREEN}Membuat folder db...${NC}"
 mkdir -p db &>/dev/null
 echo "${GREEN}Folder db telah dibuat.${NC}"
 
+# Membuat folder chatHistory
+echo "${GREEN}Membuat folder chatHistory...${NC}"
+mkdir -p chatHistory &>/dev/null
+echo "${GREEN}Folder chatHistory telah dibuat.${NC}"
+
 # Membuat folder log
 echo "${GREEN}Membuat folder log...${NC}"
 mkdir -p log &>/dev/null
